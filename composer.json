@@ -1,0 +1,24 @@
+{
+    "name": "cupoftea/wp-plugin",
+    "description": "WordPress Plugin common code.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sven Wittevrongel",
+            "email": "sven@cupoftea.io"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "CupOfTea\\WordPress\\": "src"
+        }
+    },
+    "require": {
+        "cupoftea/package": "^1.2",
+        "illuminate/container": "^5.2"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
