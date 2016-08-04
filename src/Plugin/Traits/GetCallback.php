@@ -1,6 +1,6 @@
 <?php
 
-namespace CupOfTea\WordPress\Traits;
+namespace CupOfTea\WordPress\Plugin\Traits;
 
 // TODO: Extract to seperate Package.
 
