@@ -39,7 +39,7 @@ abstract class Component implements ComponentContract
     /**
      * {@inheritdoc}
      */
-    protected function hook($name, $callback, $priority = 10, $accepted_args = 1)
+    public function hook($name, $callback, $priority = 10, $accepted_args = 1)
     {
         return add_action($name, $this->getCallback($callback), $priority, $accepted_args);
     }
@@ -47,7 +47,7 @@ abstract class Component implements ComponentContract
     /**
      * {@inheritdoc}
      */
-    protected function filter($name, $callback, $priority = 10, $accepted_args = 1)
+    public function filter($name, $callback, $priority = 10, $accepted_args = 1)
     {
         return add_filter($name, $this->getCallback($callback), $priority, $accepted_args);
     }

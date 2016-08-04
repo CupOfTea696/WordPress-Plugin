@@ -30,7 +30,7 @@ interface Component extends RegistersBindingsInWordPress
      * @param  int  $accepted_args
      * @return true
      */
-    protected function hook($name, $action, $priority = 10, $accepted_args = 1);
+    public function hook($name, $action, $priority = 10, $accepted_args = 1);
     
     /**
      * Hook into a WordPress filter.
@@ -41,5 +41,5 @@ interface Component extends RegistersBindingsInWordPress
      * @param  int  $accepted_args
      * @return true
      */
-    protected function filter($name, $action, $priority = 10, $accepted_args = 1);
+    public function filter($name, $action, $priority = 10, $accepted_args = 1);
 }

@@ -6,7 +6,7 @@ abstract class AdminComponent extends Component
 {
     protected $options = [];
     
-    protected function createOptionsPage($name = 'settings', $pageTitle = null, $menuTitle = null, $capability = 'manage_options', $callback = 'getOptionsPage')
+    public function createOptionsPage($name = 'settings', $pageTitle = null, $menuTitle = null, $capability = 'manage_options', $callback = 'getOptionsPage')
     {
         $pageTitle = $this->value($pageTitle, $this->plugin->getName());
         $menuTitle = $this->value($menuTitle, $pageTitle);
@@ -17,7 +17,7 @@ abstract class AdminComponent extends Component
         return add_options_page($pageTitle, $menuTitle, $capability, $slug, $this->getCallback($callback));
     }
     
-    protected function addSettingsSection($title = '', $description = '', $page = 'settings')
+    public function addSettingsSection($title = '', $description = '', $page = 'settings')
     {
         add_settings_section(
             $this->slug([
@@ -40,7 +40,7 @@ abstract class AdminComponent extends Component
         );
     }
     
-    protected function registerSetting($setting, $label, array $field = [], $group = '', $page = 'settings')
+    public function registerSetting($setting, $label, array $field = [], $group = '', $page = 'settings')
     {
         $setting = $this->slug([
             $this->plugin->getSlug(),
@@ -65,7 +65,7 @@ abstract class AdminComponent extends Component
         );
     }
     
-    protected function addOptionsLink($text = 'Settings')
+    public function addOptionsLink($text = 'Settings')
     {
         return add_filter('plugin_action_links_' . plugin_basename($this->plugin->getFile()), function ($links) {
             return array_merge($links, [
