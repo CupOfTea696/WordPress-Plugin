@@ -10,7 +10,7 @@ use CupOfTea\WordPress\Contracts\Plugin as PluginContract;
 
 abstract class Plugin extends Container implements PluginContract
 {
-    use PACKAGE;
+    use Package;
     
     /**
      * Package Name.
