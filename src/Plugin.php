@@ -132,7 +132,7 @@ abstract class Plugin extends Container implements PluginContract
     /**
      * {@inheritdoc}
      */
-    public function setMain($component)
+    public function setFile($component)
     {
         $this->file = $name;
     }
