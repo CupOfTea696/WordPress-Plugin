@@ -3,7 +3,7 @@
 namespace CupOfTea\WordPress\Contracts;
 
 use Illuminate\Contracts\Container\Container;
-use CupOfTea\WordPerss\Plugin\Contracts\RegistersBindingsInWordPress;
+use CupOfTea\WordPress\Plugin\Contracts\RegistersBindingsInWordPress;
 
 interface Plugin extends RegistersBindingsInWordPress, Container
 {
