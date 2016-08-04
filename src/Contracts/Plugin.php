@@ -4,7 +4,7 @@ namespace CupOfTea\WordPress\Contracts;
 
 use Illuminate\Contracts\Container\Container;
 
-interface PluginInterface implements RegistersBindingsInWordPress, Container
+interface PluginInterface extends RegistersBindingsInWordPress, Container
 {
     /**
      * Get the Plugin name.
@@ -67,5 +67,5 @@ interface PluginInterface implements RegistersBindingsInWordPress, Container
      * 
      * @return CupOfTea\WordPress\Contracts\Component
      */
-    public function getMain();
+    public function main();
 }

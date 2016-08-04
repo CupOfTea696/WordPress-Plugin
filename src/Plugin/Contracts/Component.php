@@ -4,7 +4,7 @@ namespace CupOfTea\WordPress\Plugin\Contracts;
 
 use InvalidArgumentException;
 
-interface Component implements RegistersBindingsInWordPress
+interface Component extends RegistersBindingsInWordPress
 {
     /**
      * Get the Plugin instance.
