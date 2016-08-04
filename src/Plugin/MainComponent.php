@@ -1,6 +1,6 @@
 <?php
 
-namespace CupOfTea\WordPress;
+namespace CupOfTea\WordPress\Plugin;
 
 use BadMethodCallException;
 

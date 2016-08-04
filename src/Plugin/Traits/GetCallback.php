@@ -2,6 +2,8 @@
 
 namespace CupOfTea\WordPress\Traits;
 
+// TODO: Extract to seperate Package.
+
 trait GetCallback
 {
     /**

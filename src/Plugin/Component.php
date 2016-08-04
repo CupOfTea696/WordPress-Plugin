@@ -1,10 +1,11 @@
 <?php
 
-namespace CupOfTea\WordPress;
+namespace CupOfTea\WordPress\Plugin;
 
+use InvalidArgumentException;
 use CupOfTea\WordPress\Contracts\Plugin;
-use CupOfTea\WordPress\Traits\GetCallback;
-use CupOfTea\WordPress\Contracts\Component as ComponentContract;
+use CupOfTea\WordPress\Plugin\Traits\GetCallback;
+use CupOfTea\WordPress\Plugin\Contracts\Component as ComponentContract;
 
 abstract class Component implements ComponentContract
 {

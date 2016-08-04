@@ -1,6 +1,6 @@
 <?php
 
-namespace CupOfTea\WordPress\Contracts;
+namespace CupOfTea\WordPress\Plugin\Contracts;
 
 use InvalidArgumentException;
 

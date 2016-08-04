@@ -5,6 +5,7 @@ namespace CupOfTea\WordPress;
 use ReflectionClass;
 use CupOfTea\Package\Package;
 use Illuminate\Container\Container;
+use CupOfTea\WordPress\Plugin\MainComponent;
 use CupOfTea\WordPress\Contracts\Plugin as PluginContract;
 
 abstract class Plugin extends Container implements PluginContract
