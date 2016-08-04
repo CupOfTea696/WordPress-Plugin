@@ -3,6 +3,7 @@
 namespace CupOfTea\WordPress\Plugin\Contracts;
 
 use InvalidArgumentException;
+use CupOfTea\WordPress\Contracts\Plugin;
 
 interface Component extends RegistersBindingsInWordPress
 {
