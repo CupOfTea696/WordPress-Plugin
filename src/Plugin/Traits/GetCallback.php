@@ -4,6 +4,8 @@ namespace CupOfTea\WordPress\Plugin\Traits;
 
 // TODO: Extract to seperate Package.
 
+use InvalidArgumentException;
+
 trait GetCallback
 {
     /**
@@ -13,7 +15,7 @@ trait GetCallback
      * @return callable
      * @throws \InvalidArgumentException when the action can't be resolved to a callable.
      */
-    private function getCallback($callback)
+    protected function getCallback($callback)
     {
         if (is_string($callback) && is_callable($thisCallback = [$this, $callback])) {
 			$callback = $thisCallback;
