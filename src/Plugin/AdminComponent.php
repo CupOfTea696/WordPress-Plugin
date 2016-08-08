@@ -4,28 +4,62 @@ namespace CupOfTea\WordPress\Plugin;
 
 abstract class AdminComponent extends Component
 {
-    protected $options = [];
+    protected $forms = [];
     
-    public function createOptionsPage($name = 'settings', $pageTitle = null, $menuTitle = null, $capability = 'manage_options', $callback = 'getOptionsPage')
+    protected $sections = [];
+    
+    public function __construct()
     {
-        $pageTitle = $this->value($pageTitle, $this->plugin->getName());
+        $this->hook('whitelist_options', 'whitelistCustomOptionsPage', 11);
+    }
+    
+    public function createOptionsPage($name = '', $pageTitle = null, $menuTitle = null, $capability = 'manage_options', $callback = 'getOptionsPage')
+    {
+        $pageTitle = $this->value($pageTitle, $this->getPlugin()->getName());
         $menuTitle = $this->value($menuTitle, $pageTitle);
-        $slug = $this->slug($this->plugin->getSlug(), $name);
+        $slug = $this->slug([$this->getPlugin()->getSlug(), $name]);
         
-        $this->options[$slug] = new Form();
+        $this->forms[$slug] = new Form();
         
         return add_options_page($pageTitle, $menuTitle, $capability, $slug, $this->getCallback($callback));
     }
     
-    public function addSettingsSection($title = '', $description = '', $page = 'settings')
+    public function addOptionsLink($page = '', $text = 'Settings')
     {
+        return add_filter('plugin_action_links_' . plugin_basename($this->getPlugin()->getFile()), function ($links) use ($page, $text) {
+            return array_merge($links, [
+                '<a href="' . admin_url('options-general.php?page=' . $this->slug([$this->getPlugin()->getSlug(), $page])) . '">' . $text . '</a>',
+            ]);
+        });
+    }
+    
+    public function whitelistCustomOptionsPage($options)
+    {
+        foreach ($this->sections as $page => $sections) {
+            foreach ($sections as $section) {
+                if (! empty($options[$section])) {
+                    foreach ($options[$section] as $option) {
+                        $options[$page][] = $option;
+                    }
+                }
+            }
+        }
+        
+        return $options;
+    }
+    
+    public function addSettingsSection($title = '', $description = '', $page = '')
+    {
+        $group = $this->slug([
+            str_replace('-', '_', $this->getPlugin()->getSlug()),
+            $page,
+            str_replace('-', '_', sanitize_title($title)),
+            'section',
+        ]);
+        $page = $this->slug([$this->getPlugin()->getSlug(), $page]);
+        
         add_settings_section(
-            $this->slug([
-                $this->plugin->getSlug(),
-                $page,
-                sanitize_title($title),
-                'section',
-            ]),
+            $group,
             $title,
             function ($args) use ($description) {
                 return preg_replace_callback('/:([A-z_][A-z0-9_-]*)/', function ($matches) use ($args) {
@@ -36,45 +70,56 @@ abstract class AdminComponent extends Component
                     return $matches[0];
                 }, $description);
             },
-            $this->plugin->getSlug() . '_' . $page
+            $page
         );
+        
+        if ($group != $page) {
+            $this->sections[$page][$group] = $group;
+        }
     }
     
-    public function registerSetting($setting, $label, array $field = [], $group = '', $page = 'settings')
+    public function registerSetting($setting, $label, array $field = [], $group = '', $page = '')
     {
+        $form = $this->forms[
+            $this->slug([
+                $this->getPlugin()->getSlug(),
+                $page,
+            ])
+        ];
+        
         $setting = $this->slug([
-            $this->plugin->getSlug(),
+            str_replace('-', '_', $this->getPlugin()->getSlug()),
             $setting,
         ]);
         
-        register_setting(
-            $this->slug([
-                $this->plugin->getSlug(),
-                $page,
-                sanitize_title($group),
-                'section',
-            ]),
-            $setting
-        );
+        $group = $this->slug([
+            str_replace('-', '_', $this->getPlugin()->getSlug()),
+            $page,
+            str_replace('-', '_', sanitize_title($group)),
+            'section',
+        ]);
+        
+        add_option($setting);
         
         add_settings_field(
             $setting,
             $label,
-            $this->getField($field),
-            $this->plugin->getSlug() . '_' . $page
+            $this->getField($form, $setting, $field),
+            $this->slug([$this->getPlugin()->getSlug(), $page]),
+            $group,
+            ['label_for' => $setting]
+        );
+        
+        register_setting(
+            $group,
+            $setting,
+            function ($input) {
+                return $input;
+            }
         );
     }
     
-    public function addOptionsLink($text = 'Settings')
-    {
-        return add_filter('plugin_action_links_' . plugin_basename($this->plugin->getFile()), function ($links) {
-            return array_merge($links, [
-                '<a href="' . admin_url('options-general.php?page=' . $this->plugin->getSlug()) . '">' . $text . '</a>',
-            ]);
-        });
-    }
-    
-    protected function view($name)
+    protected function view($name, $page = '', $data = [])
     {
         $viewDirs = [
             dirname($this->getPlugin()->getFile()) . '/views/',
@@ -86,12 +131,31 @@ abstract class AdminComponent extends Component
             str_replace('.', '/', $name) . '.php',
         ];
         
+        $page = $this->slug([$this->getPlugin()->getSlug(), $page]);
+        
         foreach ($viewDirs as $viewDir) {
             foreach ($views as $view) {
                 $path = $viewDir . $view;
                 
                 if (file_exists($path)) {
-                    return include $path;
+                    $view = function($__view_path, $__data) {
+                        extract($__data);
+                        
+                        return include $__view_path;
+                    };
+                    
+                    $data['__plugin'] = $this->getPlugin();
+                    $data['__page'] = $page;
+                    
+                    if (! isset($data['plugin'])) {
+                        $data['plugin'] = $data['__plugin'];
+                    }
+                    
+                    if (! isset($data['page'])) {
+                        $data['page'] = $page;
+                    }
+                    
+                    return $view($path, $data);
                 }
             }
         }
@@ -110,11 +174,11 @@ abstract class AdminComponent extends Component
             return $form->text($setting);
         }
         
-        $type = $this->arary_get('type', $field, 'text');
-        $class = $this->arary_get('class', $field, []);
-        $attributes = $this->arary_get('attributes', $field, []);
+        $type = $this->array_get('type', $field, 'text');
+        $class = $this->array_get('class', $field, []);
+        $attributes = $this->array_get('attributes', $field, []);
         
-        $form->$type($setting, $class, $attributes);
+        return $form->$type($setting, $class, $attributes);
     }
     
     private function value($value, $fallback = null)
