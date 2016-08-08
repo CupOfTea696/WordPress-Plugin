@@ -39,6 +39,22 @@ abstract class Component implements ComponentContract
     /**
      * {@inheritdoc}
      */
+    final public function getOption($option, $default = null)
+    {
+        return get_option(str_replace('-', '_', $this->getPlugin()->getSlug()) . '_' . $option, $default);
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    final public function main()
+    {
+        return $this->getPlugin()->main();
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
     public function hook($name, $callback, $priority = 10, $accepted_args = 1)
     {
         return add_action($name, $this->getCallback($callback), $priority, $accepted_args);
