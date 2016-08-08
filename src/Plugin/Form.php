@@ -18,7 +18,7 @@ class Form
             $attributes['value'] = get_option($properties['id']);
             
             $this->compileField('<textarea id=":id" name=":name":attributes>:value</textarea>', $properties);
-        }
+        };
     }
     
     public function password($id, $class = [], array $attributes = [])
@@ -106,7 +106,7 @@ class Form
         $attributes = $this->getAttributes($class, $attributes);
         $properties = compact('type', 'id', 'class', 'attributes');
         
-        return $this->getInput('<input type=":type" id=":id" name=":name" value=":value":attributes>', $properties);
+        return $this->getInput('<input type=":type" id=":id" name=":name":attributes>', $properties);
     }
     
     protected function box($type, $id, $name = null, $class = [], array $attributes = [])
@@ -120,10 +120,10 @@ class Form
     
     protected function getInput($tpl, $properties) {
         return function () use ($tpl, $properties) {
-            $properties['value'] = get_option($properties['id']);
+            $properties['attributes']['value'] = get_option($properties['id']);
             
             $this->compileField($tpl, $properties);
-        }
+        };
     }
     
     protected function getBox($tpl, $properties) {
@@ -131,7 +131,7 @@ class Form
             $properties['attributes']['checked'] = (bool) get_option($properties['id']);
             
             $this->compileField($tpl, $properties);
-        }
+        };
     }
     
     protected function compileField($field, $properties)
@@ -177,9 +177,9 @@ class Form
             if (is_string($class)) {
                 $class = explode(' ', $class);
             }
-            
-            $attributes['class'] = implode(' ', array_merge($attributes['class'], $class));
         }
+        
+        $attributes['class'] = implode(' ', array_merge($attributes['class'], $class));
         
         return $attributes;
     }
