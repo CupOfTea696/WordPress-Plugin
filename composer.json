@@ -16,7 +16,7 @@
     },
     "require": {
         "cupoftea/package": "^1.2",
-        "illuminate/container": "5.2.*"
+        "illuminate/container": "5.2.*|5.3.*"
     },
     "config": {
         "sort-packages": true
